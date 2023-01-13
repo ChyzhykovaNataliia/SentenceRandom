@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">sentenceRandom</string>
+    <string name="text_view_count">Items Count</string>
+</resources>

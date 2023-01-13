@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="width_edit_text">56dp</dimen>
+    <dimen name="between_layout">64dp</dimen>
+    <dimen name="margin_index_right">16dp</dimen>
+    <dimen name="margin_index">12dp</dimen>
+    <dimen name="text_size">18dp</dimen>
+    <dimen name="width_button">100dp</dimen>
+</resources>
