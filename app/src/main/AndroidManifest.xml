@@ -18,7 +18,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ItemsActivity"></activity>
+        <activity android:name=".scrollview.ItemsActivity"></activity>
+        <activity android:name=".listview.BaseAdapterListViewActivity"></activity>
+        <activity android:name=".listviewcheckbox.BaseAdapterListViewActivityCheckbox"></activity>
     </application>
 
 </manifest>

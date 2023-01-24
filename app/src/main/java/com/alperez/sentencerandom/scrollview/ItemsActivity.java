@@ -1,22 +1,15 @@
-package com.alperez.sentencerandom;
+package com.alperez.sentencerandom.scrollview;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.alperez.sentencerandom.R;
+import com.alperez.sentencerandom.RandomSentence;
 
 /**
  * Created by stanislav.perchenko on 11.01.2023 at 22:36.
@@ -31,12 +24,12 @@ public class ItemsActivity extends AppCompatActivity {
         llRoot = (LinearLayout) findViewById(R.id.llMain);
 
         Bundle bundle = getIntent().getExtras();
-        int number_text = bundle.getInt("number");
+        int nItems = bundle.getInt("number");
 
         final RandomSentence rs = new RandomSentence(60, 100);
-        for (int i=0; i < number_text; i++) {
+        for (int i = 0; i < nItems; i++) {
             String s = rs.createText();
-            String str = Integer.toString(i);
+            String str = Integer.toString(i+1);
             addItem (str, s);
         }
     }
