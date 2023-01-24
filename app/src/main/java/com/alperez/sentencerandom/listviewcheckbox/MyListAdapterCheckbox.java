@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,8 @@ import java.util.List;
  * Created by stanislav.perchenko on 18.01.2023 at 21:31.
  */
 public class MyListAdapterCheckbox extends BaseAdapter {
+    public static final String TAG = "MY_ADAPTER";
+
     private final Context context;
     private final List<ItemModel> data;
 
@@ -62,38 +65,20 @@ public class MyListAdapterCheckbox extends BaseAdapter {
         View row = convertView;
         ViewHolder holder;
 
-
         //---  Create Row view  ---
-        if(row == null){
+        if(row == null) {
+            Log.e(TAG, "getView() NEW for position "+position);
             row = LayoutInflater.from(context).inflate(R.layout.layout_list_item_checkbox, parent, false);
             holder = new ViewHolder(row);
             row.setTag(holder);
-            holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    Integer myPosition = (Integer) buttonView.getTag();
-                    ItemModel model = getItem(myPosition);
-                    ItemModel newModel = new ItemModel(model.text, isChecked);
-                    setDataItem(myPosition, newModel);
-                }
-            });
         } else {
+            Log.d(TAG, "getView() for position "+position);
             holder = (ViewHolder) row.getTag();
         }
 
         //---  Data binding  ---
         ItemModel model = getItem(position);
-        holder.checkBox.setTag(position);
-        holder.tvIndex.setText(String.valueOf(position + 1));
-        holder.tvData.setText(model.text);
-        holder.checkBox.setChecked(model.isActive);
-
-        if (model.isActive) {
-            holder.dr.setTint(Color.MAGENTA);
-        } else {
-            holder.dr.setTint(0);
-        }
-        holder.iv.setImageDrawable(holder.dr);
+        holder.bindData(model, position);
 
         return row;
     }
@@ -105,6 +90,10 @@ public class MyListAdapterCheckbox extends BaseAdapter {
         final ImageView iv;
         final Drawable dr;
 
+        private int position;
+
+        private boolean ignoreNextCallback;
+
         public ViewHolder(View rootView) {
             tvIndex = rootView.findViewById(R.id.text_index);
             checkBox = rootView.findViewById(R.id.checkbox);
@@ -112,6 +101,40 @@ public class MyListAdapterCheckbox extends BaseAdapter {
             iv = rootView.findViewById(R.id.id_star);
             dr = iv.getDrawable().mutate();
             dr.setTintMode(PorterDuff.Mode.SRC_ATOP);
+
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (ignoreNextCallback) {
+                        ignoreNextCallback = false;
+                        Log.e(TAG, String.format("onCheckChanged() position=%s, isChecked=%b -> IGNORE", position, isChecked));
+                        return;
+                    }
+                    Log.e(TAG, String.format("onCheckChanged() position=%s, isChecked=%b", position, isChecked));
+                    ItemModel model = getItem(position);
+                    ItemModel newModel = new ItemModel(model.text, isChecked);
+                    setDataItem(position, newModel);
+                }
+            });
+
+        }
+
+        public void bindData(ItemModel model, int position) {
+            this.position = position;
+
+            tvIndex.setText(String.valueOf(position + 1));
+            tvData.setText(model.text);
+            if (checkBox.isChecked() != model.isActive) {
+                ignoreNextCallback = true;
+                checkBox.setChecked(model.isActive);
+            }
+
+            if (model.isActive) {
+                dr.setTint(Color.MAGENTA);
+            } else {
+                dr.setTint(0);
+            }
+            iv.setImageDrawable(dr);
         }
     }
 }
